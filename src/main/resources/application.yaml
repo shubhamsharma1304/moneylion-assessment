@@ -1,0 +1,20 @@
+spring:
+   h2:
+      console:
+         enabled: true
+   datasource:
+      url: jdbc:h2:mem:features-db
+#     url: jdbc:mysql://localhost:3306/features-db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+      username: testuser
+      password: testpassword
+   jpa:
+      hibernate:
+#        Below is "ddl-auto: create" is to be used only for testing
+         ddl-auto: create
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.H2Dialect
+#           dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+            jdbc:
+               lob:
+                  non_contextual_creation: true
