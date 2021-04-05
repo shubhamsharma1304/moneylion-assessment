@@ -1,7 +1,7 @@
 package com.moneylion.evaluation.features.access.model;
 
 import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeEmailInput;
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeFeatureNameInput;;
+import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeFeatureNameInput;
 
 import java.io.Serializable;
 
