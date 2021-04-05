@@ -1,6 +1,7 @@
 package com.moneylion.evaluation.features.access.model;
 
 import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeEmailInput;
+import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeFeatureNameInput;;
 
 import java.io.Serializable;
 
@@ -123,7 +124,7 @@ public class FeatureUser {
 	public static FeatureUser fromRequest(FeatureUserRequest featureUserRequest) throws InvalidInputException {
 
 		String validEmail = sanitizeEmailInput(featureUserRequest.getEmail());
-		String validFeatureName = sanitizeEmailInput(featureUserRequest.getFeatureName());
+		String validFeatureName = sanitizeFeatureNameInput(featureUserRequest.getFeatureName());
 
 		FeatureUser featureUser = new FeatureUser(new FeatureUserId(validFeatureName, validEmail),
 				new Feature(validFeatureName), featureUserRequest.isEnable());
