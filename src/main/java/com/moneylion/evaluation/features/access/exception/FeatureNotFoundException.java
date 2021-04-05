@@ -1,6 +1,5 @@
 package com.moneylion.evaluation.features.access.exception;
 
-//@ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class FeatureNotFoundException extends Exception {
 	/**
 	 * 

@@ -30,21 +30,3 @@ values('FeatureA', 'test5@test.com', true);
 
 insert into feature_user
 values('FeatureA', 'test6@test.com', false);
-
-
-/*
-insert into user
-values('test1@test.com');
-
-insert into user
-values('test2@test.com');
-
-insert into user
-values('test3@test.com');
-
-insert into user
-values('test4@test.com');
-
-insert into user
-values('test5@test.com');
-*/

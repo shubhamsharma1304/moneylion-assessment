@@ -4,7 +4,6 @@ spring:
          enabled: true
    datasource:
       url: jdbc:h2:mem:features-db
-#     url: jdbc:mysql://localhost:3306/features-db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
       username: testuser
       password: testpassword
    jpa:
@@ -14,7 +13,6 @@ spring:
       properties:
          hibernate:
             dialect: org.hibernate.dialect.H2Dialect
-#           dialect: org.hibernate.dialect.MySQL5InnoDBDialect
             jdbc:
                lob:
                   non_contextual_creation: true

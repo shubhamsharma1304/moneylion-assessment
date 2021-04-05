@@ -1,21 +1,23 @@
 package com.moneylion.evaluation.features.access.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import com.moneylion.evaluation.features.access.dao.FeatureDAO;
-import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
+import com.moneylion.evaluation.features.access.repository.FeatureRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class FeatureService {
+public class FeatureService implements IFeatureService {
 
-	private final FeatureDAO featureDAO;
+	private final FeatureRepository featureRepository;
 
-	public Feature getFeatureByName(String featureName) throws FeatureNotFoundException {
-		return featureDAO.findOrDie(featureName);
+	@Override
+	public Optional<Feature> getFeatureByName(String featureName) {
+		return featureRepository.findById(featureName);
 	}
 }
