@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.repository.FeatureRepository;
+import com.moneylion.evaluation.features.access.service.impl.FeatureServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 class FeatureServiceTest {
@@ -25,7 +26,7 @@ class FeatureServiceTest {
 
 
 	@InjectMocks
-	private FeatureService featureService;
+	private FeatureServiceImpl featureService;
 
 	private Feature getMockFeature(String featureName) {
 		return Feature.builder().name(featureName).build();

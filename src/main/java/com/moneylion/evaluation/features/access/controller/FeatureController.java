@@ -20,8 +20,8 @@ import com.moneylion.evaluation.features.access.exception.handler.FeaturesAccess
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserRequest;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserResponse;
-import com.moneylion.evaluation.features.access.service.IFeatureService;
-import com.moneylion.evaluation.features.access.service.IFeatureUserService;
+import com.moneylion.evaluation.features.access.service.FeatureService;
+import com.moneylion.evaluation.features.access.service.FeatureUserService;
 
 /**
  * @author Shubham Sharma
@@ -35,10 +35,10 @@ public class FeatureController {
 	static final String BASE_URL = "/feature";
 
 	@Autowired
-	private IFeatureService featureService;
+	private FeatureService featureService;
 
 	@Autowired
-	private IFeatureUserService featureUserService;
+	private FeatureUserService featureUserService;
 
 	/**
 	 * This method checks if the user with email address {@code email} can access

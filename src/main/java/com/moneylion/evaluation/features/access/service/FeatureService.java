@@ -2,22 +2,19 @@ package com.moneylion.evaluation.features.access.service;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import com.moneylion.evaluation.features.access.model.Feature;
-import com.moneylion.evaluation.features.access.repository.FeatureRepository;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+public interface FeatureService {
 
-@Service
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class FeatureService implements IFeatureService {
-
-	private final FeatureRepository featureRepository;
-
-	@Override
-	public Optional<Feature> getFeatureByName(String featureName) {
-		return featureRepository.findById(featureName);
-	}
+	/**
+	 * This method will return an {@link Optional} over the {@link Feature} entity
+	 * with name {@code featureName}. Caller can then decide what to do if such a
+	 * {@link Feature} was not found. <br>
+	 * 
+	 * @param featureName The name of the feature to search for.<br>
+	 *                    <br>
+	 * @return An {@link Optional} over the {@link Feature} entity with name
+	 *         {@code featureName}.
+	 */
+	public Optional<Feature> getFeatureByName(String featureName);
 }

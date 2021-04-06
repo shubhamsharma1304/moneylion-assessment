@@ -20,6 +20,7 @@ import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserId;
 import com.moneylion.evaluation.features.access.repository.FeatureUserRepository;
+import com.moneylion.evaluation.features.access.service.impl.FeatureUserServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 class FeatureUserServiceTest {
@@ -28,7 +29,7 @@ class FeatureUserServiceTest {
 	private FeatureUserRepository featureUserRepository;
 
 	@InjectMocks
-	private FeatureUserService featureUserService;
+	private FeatureUserServiceImpl featureUserService;
 
 	private FeatureUser getMockFeatureUser(String featureName, String email, boolean canAccess) {
 

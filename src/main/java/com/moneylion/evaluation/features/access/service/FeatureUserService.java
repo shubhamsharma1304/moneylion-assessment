@@ -2,27 +2,36 @@ package com.moneylion.evaluation.features.access.service;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import com.moneylion.evaluation.features.access.model.FeatureUser;
-import com.moneylion.evaluation.features.access.repository.FeatureUserRepository;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+public interface FeatureUserService {
 
-@Service
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class FeatureUserService implements IFeatureUserService {
+	/**
+	 * This method will return an {@link Optional} over a persistent
+	 * {@link FeatureUser} entity that matches with {@code featureUser}. If such a
+	 * persistent {@link FeatureUser} entity cannot be found, it will return an
+	 * {@link Optional} over {@code null}. <br>
+	 * 
+	 * @param featureUser<br>
+	 *                        <br>
+	 * @return An {@link Optional} over a persistent {@link FeatureUser} entity that
+	 *         matches with {@code featureUser}. If such a persistent
+	 *         {@link FeatureUser} entity cannot be found, then an {@link Optional}
+	 *         over {@code null}.<br>
+	 *         <br>
+	 */
+	public Optional<FeatureUser> getFeatureUser(FeatureUser featureUser);
 
-	private final FeatureUserRepository featureUserRepository;
-
-	@Override
-	public Optional<FeatureUser> getFeatureUser(FeatureUser featureUser) {
-		return featureUserRepository.findById(featureUser.getId());
-	}
-
-	@Override
-	public FeatureUser createOrModify(FeatureUser featureUser) throws Throwable {
-		return featureUserRepository.save(featureUser);
-	}
+	/**
+	 * This method either creates a new persistent {@link FeatureUser} entity or
+	 * updates the existing one if found.
+	 * 
+	 * @param featureUser The {@link FeatureUser} that needs to be persisted
+	 *                    (created or updated).
+	 * @return The {@link FeatureUser} {@code featureUser} after it has been
+	 *         persisted.
+	 * @throws Throwable If a problem was encountered while trying to create or
+	 *                   update the {@link FeatureUser} {@code featureUser}.
+	 */
+	public FeatureUser createOrModify(FeatureUser featureUser) throws Throwable;
 }
