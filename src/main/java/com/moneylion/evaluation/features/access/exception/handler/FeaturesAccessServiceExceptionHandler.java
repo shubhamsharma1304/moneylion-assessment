@@ -2,11 +2,17 @@ package com.moneylion.evaluation.features.access.exception.handler;
 
 import java.util.Date;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +20,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
-import com.moneylion.evaluation.features.access.exception.InvalidInputException;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,16 +51,31 @@ public class FeaturesAccessServiceExceptionHandler {
 		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getLocalizedMessage());
 	}
 
-	@ExceptionHandler({ HttpMessageConversionException.class, ServletRequestBindingException.class,
-			InvalidInputException.class })
-	public ResponseEntity<?> handleBadOrMalformedRequestExceptions(Exception excp, WebRequest request) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<GenericAPIError> handleValidationExceptions(MethodArgumentNotValidException excp,
+			WebRequest request) {
+		HttpStatus returnStatus = HttpStatus.BAD_REQUEST;
+		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getBindingResult().getAllErrors().stream()
+				.map(FieldError.class::cast).map(FieldError::getDefaultMessage).collect(Collectors.toSet()).toString());
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<GenericAPIError> handleValidationExceptions(ConstraintViolationException excp,
+			WebRequest request) {
+		HttpStatus returnStatus = HttpStatus.BAD_REQUEST;
+		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getConstraintViolations().stream()
+				.map(ConstraintViolation::getMessage).collect(Collectors.toSet()).toString());
+	}
+
+	@ExceptionHandler({ HttpMessageConversionException.class, ServletRequestBindingException.class })
+	public ResponseEntity<GenericAPIError> handleBadOrMalformedRequestExceptions(Exception excp, WebRequest request) {
 		HttpStatus returnStatus = HttpStatus.BAD_REQUEST;
 		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getLocalizedMessage());
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException excp,
-			WebRequest request) {
+	public ResponseEntity<GenericAPIError> handleHttpRequestMethodNotSupportedException(
+			HttpRequestMethodNotSupportedException excp, WebRequest request) {
 		HttpStatus returnStatus = HttpStatus.METHOD_NOT_ALLOWED;
 		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getLocalizedMessage());
 	}

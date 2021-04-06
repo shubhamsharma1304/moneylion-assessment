@@ -2,45 +2,25 @@ package com.moneylion.evaluation.features.access.service;
 
 import java.util.Optional;
 
-import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 
 public interface IFeatureUserService {
 
 	/**
-	 * This method will return an {@link Optional} over the {@link FeatureUser}
-	 * entity for {@link Feature} {@code feature}, and email address {@code email}.
-	 * Caller can then decide what to do if such a {@link FeatureUser} entity was
-	 * not found. <br>
+	 * This method will return an {@link Optional} over a persistent
+	 * {@link FeatureUser} entity that matches with {@code featureUser}. If such a
+	 * persistent {@link FeatureUser} entity cannot be found, it will return an
+	 * {@link Optional} over {@code null}. <br>
 	 * 
-	 * @param feature<br>
-	 *                    <br>
-	 * @param email<br>
-	 *                    <br>
-	 * @return<br>
-	 *             <br>
-	 */
-	public Optional<FeatureUser> getFeatureUser(Feature feature, String email);
-
-	/**
-	 * This method will return a {@link FeatureUser} entity for {@link Feature}
-	 * {@code feature}, and email address {@code email}. If such a
-	 * {@link FeatureUser} entity cannot be found, a default {@link FeatureUser}
-	 * will be returned. What values the returned default {@link FeatureUser} will
-	 * be decided by the implementation.<br>
-	 * 
-	 * @param feature<br>
-	 *                    <br>
-	 * @param email<br>
-	 *                    <br>
-	 * @return a {@link FeatureUser} entity for {@link Feature} {@code feature}, and
-	 *         email address {@code email}. If such a {@link FeatureUser} entity
-	 *         cannot be found, a default {@link FeatureUser} will be returned. What
-	 *         values the returned default {@link FeatureUser} will be decided by
-	 *         the implementation. <br>
+	 * @param featureUser<br>
+	 *                        <br>
+	 * @return An {@link Optional} over a persistent {@link FeatureUser} entity that
+	 *         matches with {@code featureUser}. If such a persistent
+	 *         {@link FeatureUser} entity cannot be found, then an {@link Optional}
+	 *         over {@code null}.<br>
 	 *         <br>
 	 */
-	public FeatureUser getFeatureUserOrDefault(Feature feature, String email);
+	public Optional<FeatureUser> getFeatureUser(FeatureUser featureUser);
 
 	/**
 	 * This method either creates a new persistent {@link FeatureUser} entity or

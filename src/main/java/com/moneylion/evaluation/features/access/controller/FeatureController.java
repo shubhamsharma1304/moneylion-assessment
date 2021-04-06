@@ -1,12 +1,11 @@
 package com.moneylion.evaluation.features.access.controller;
 
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeEmailInput;
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeFeatureNameInput;
-
-import java.util.Collections;
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
-import com.moneylion.evaluation.features.access.exception.InvalidInputException;
 import com.moneylion.evaluation.features.access.exception.handler.FeaturesAccessServiceExceptionHandler;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserRequest;
+import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserResponse;
 import com.moneylion.evaluation.features.access.service.IFeatureService;
 import com.moneylion.evaluation.features.access.service.IFeatureUserService;
 
@@ -30,6 +29,7 @@ import com.moneylion.evaluation.features.access.service.IFeatureUserService;
  */
 @RestController
 @RequestMapping(FeatureController.BASE_URL)
+@Validated
 public class FeatureController {
 
 	static final String BASE_URL = "/feature";
@@ -71,22 +71,25 @@ public class FeatureController {
 	 *                                  class and will be processed appropriately.
 	 * @throws InvalidInputException    If either the {@code email} is not a valid
 	 *                                  email address or the {@code featureName} is
-	 *                                  blank.
+	 *                                  blank. This Exception will then be caught by
+	 *                                  the relevant method in
+	 *                                  {@link FeaturesAccessServiceExceptionHandler}
+	 *                                  class and will be processed appropriately.
 	 */
 	@GetMapping
 	@ResponseBody
-	public Map<String, Boolean> getFeatureAccessByEmail(@RequestParam String email, @RequestParam String featureName)
-			throws FeatureNotFoundException, InvalidInputException {
+	public FeatureUserResponse getFeatureAccessByEmail(
+			@RequestParam @Email @NotBlank(message = "Request parameter email is not a valid email address. Please check.") String email,
+			@RequestParam @NotBlank(message = "Request parameter featureName name should be a non-blank value.") String featureName)
+			throws FeatureNotFoundException {
 
-		String validEmail = sanitizeEmailInput(email);
-		String validFeatureName = sanitizeFeatureNameInput(featureName);
+		FeatureUser featureUser = FeatureUser.fromRequest(new FeatureUserRequest(featureName, email));
 
-		boolean canAccess = featureUserService
-				.getFeatureUserOrDefault(featureService.getFeatureByName(validFeatureName)
-						.orElseThrow(() -> FeatureNotFoundException.forName(validFeatureName)), validEmail)
-				.getIsEnabled();
+		// Validate if a feature with name featureName exists.
+		featureService.getFeatureByName(featureUser.getId().getFeatureName())
+				.orElseThrow(() -> FeatureNotFoundException.forName(featureUser.getId().getFeatureName()));
 
-		return Collections.singletonMap("canAccess", canAccess);
+		return featureUserService.getFeatureUser(featureUser).orElse(featureUser).getResponse();
 	}
 
 	/**
@@ -121,10 +124,15 @@ public class FeatureController {
 	 *                                            address or the input featureName
 	 *                                            is blank.</li>
 	 *                                            <li>Database connectivity
-	 *                                            issue</li>
+	 *                                            issue</li>. This Exception will
+	 *                                            then be caught by the relevant
+	 *                                            method in
+	 *                                            {@link FeaturesAccessServiceExceptionHandler}
+	 *                                            class and will be processed
+	 *                                            appropriately.
 	 */
 	@PostMapping
-	public void addFeatureAccessByEmail(@RequestBody FeatureUserRequest featureUserRequest)
+	public void addFeatureAccessByEmail(@RequestBody @Valid FeatureUserRequest featureUserRequest)
 			throws FeatureAccessModificationException {
 		try {
 			featureUserService.createOrModify(FeatureUser.fromRequest(featureUserRequest));

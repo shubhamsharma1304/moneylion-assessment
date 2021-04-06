@@ -54,7 +54,7 @@ class FeatureUserServiceTest {
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.of(featureUser));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUserOrDefault(featureUser.getFeature(), email);
+		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
 
 		assertEquals(featureUser, testFeatureUser);
 		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());
@@ -71,7 +71,7 @@ class FeatureUserServiceTest {
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.of(featureUser));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUserOrDefault(featureUser.getFeature(), email);
+		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
 
 		assertEquals(featureUser, testFeatureUser);
 		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());
@@ -88,7 +88,7 @@ class FeatureUserServiceTest {
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.ofNullable(null));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUserOrDefault(featureUser.getFeature(), email);
+		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
 
 		assertEquals(featureUser, testFeatureUser);
 		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());

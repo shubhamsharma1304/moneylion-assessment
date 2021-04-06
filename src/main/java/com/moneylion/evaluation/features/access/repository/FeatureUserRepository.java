@@ -7,5 +7,5 @@ import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserId;
 
 @Repository
-public interface FeatureUserRepository extends JpaRepository<FeatureUser, FeatureUser.FeatureUserId>{
+public interface FeatureUserRepository extends JpaRepository<FeatureUser, FeatureUserId>{
 }

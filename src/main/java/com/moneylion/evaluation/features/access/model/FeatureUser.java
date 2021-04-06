@@ -1,7 +1,7 @@
 package com.moneylion.evaluation.features.access.model;
 
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeEmailInput;
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.sanitizeFeatureNameInput;
+import static com.moneylion.evaluation.features.access.helpers.CommonHelper.standardizeEmailInput;
+import static com.moneylion.evaluation.features.access.helpers.CommonHelper.standardizeFeatureNameInput;
 
 import java.io.Serializable;
 
@@ -13,9 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
-import com.moneylion.evaluation.features.access.exception.InvalidInputException;
-
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -77,7 +78,7 @@ public class FeatureUser {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Embeddable
-	static public class FeatureUserId implements Serializable {
+	public static class FeatureUserId implements Serializable {
 
 		/**
 		 * 
@@ -101,9 +102,16 @@ public class FeatureUser {
 	 */
 	@Data
 	@AllArgsConstructor
-	static public class FeatureUserRequest {
-		String featureName;
-		String email;
+	@RequiredArgsConstructor
+	public static class FeatureUserRequest {
+
+		@NotBlank(message = "Field featureName should be a non-blank value.")
+		private final String featureName;
+
+		@NotBlank(message = "Field email should be a non-blank value.")
+		@Email(message = "Field email is not a valid email address. Please check.")
+		private final String email;
+
 		boolean enable;
 	}
 
@@ -121,14 +129,28 @@ public class FeatureUser {
 	 *                               email in the {@code featureUserRequest} is not
 	 *                               a valid email address.
 	 */
-	public static FeatureUser fromRequest(FeatureUserRequest featureUserRequest) throws InvalidInputException {
+	public static FeatureUser fromRequest(FeatureUserRequest featureUserRequest) {
 
-		String validEmail = sanitizeEmailInput(featureUserRequest.getEmail());
-		String validFeatureName = sanitizeFeatureNameInput(featureUserRequest.getFeatureName());
+		String validEmail = standardizeEmailInput(featureUserRequest.getEmail());
+		String validFeatureName = standardizeFeatureNameInput(featureUserRequest.getFeatureName());
 
 		FeatureUser featureUser = new FeatureUser(new FeatureUserId(validFeatureName, validEmail),
 				new Feature(validFeatureName), featureUserRequest.isEnable());
 
 		return featureUser;
+	}
+
+	@Data
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	public static class FeatureUserResponse {
+		private final boolean canAccess;
+
+		private static FeatureUserResponse fromFeatureUser(FeatureUser featureUser) {
+			return new FeatureUserResponse(featureUser.getIsEnabled());
+		}
+	}
+
+	public FeatureUserResponse getResponse() {
+		return FeatureUserResponse.fromFeatureUser(this);
 	}
 }
