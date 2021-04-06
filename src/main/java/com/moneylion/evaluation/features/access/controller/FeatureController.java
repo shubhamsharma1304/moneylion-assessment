@@ -82,8 +82,8 @@ public class FeatureController {
 			@RequestParam @Email @NotBlank(message = "Request parameter email is not a valid email address. Please check.") String email,
 			@RequestParam @NotBlank(message = "Request parameter featureName name should be a non-blank value.") String featureName)
 			throws FeatureNotFoundException {
-
-		FeatureUser featureUser = FeatureUser.fromRequest(new FeatureUserRequest(featureName, email));
+		
+		FeatureUser featureUser = FeatureUser.fromRequest(new FeatureUserRequest(featureName, email, false));
 
 		// Validate if a feature with name featureName exists.
 		featureService.getFeatureByName(featureUser.getId().getFeatureName())

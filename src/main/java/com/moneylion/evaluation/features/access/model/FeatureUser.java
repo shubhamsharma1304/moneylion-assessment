@@ -102,15 +102,14 @@ public class FeatureUser {
 	 */
 	@Data
 	@AllArgsConstructor
-	@RequiredArgsConstructor
 	public static class FeatureUserRequest {
 
 		@NotBlank(message = "Field featureName should be a non-blank value.")
-		private final String featureName;
+		private String featureName;
 
 		@NotBlank(message = "Field email should be a non-blank value.")
 		@Email(message = "Field email is not a valid email address. Please check.")
-		private final String email;
+		private String email;
 
 		boolean enable;
 	}
