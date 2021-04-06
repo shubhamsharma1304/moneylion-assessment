@@ -3,6 +3,7 @@ package com.moneylion.evaluation.features.access.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -79,7 +80,7 @@ class FeatureUserServiceTest {
 	}
 
 	@Test
-	void shouldFindFeatureUserNotPresentDefaultCannotAccess() throws FeatureNotFoundException {
+	void shouldNotFindFeatureUser() throws FeatureNotFoundException {
 
 		String featureName = "UnitTestFeature";
 		String email = "unittest1@test.com";
@@ -89,10 +90,7 @@ class FeatureUserServiceTest {
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.ofNullable(null));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
-
-		assertEquals(featureUser, testFeatureUser);
-		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());
+		assertThrows(NoSuchElementException.class, () -> featureUserService.getFeatureUser(featureUser).get());
 	}
 
 	@Test
