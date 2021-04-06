@@ -8,7 +8,7 @@ spring:
       password: testpassword
    jpa:
       hibernate:
-#        Below is "ddl-auto: create" is to be used only for testing
+#        Below "ddl-auto: create" is to be used only for testing
          ddl-auto: create
       properties:
          hibernate:
