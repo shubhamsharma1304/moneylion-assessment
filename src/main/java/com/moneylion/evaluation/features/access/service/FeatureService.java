@@ -1,21 +1,19 @@
 package com.moneylion.evaluation.features.access.service;
 
-import java.util.Optional;
-
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
 
 public interface FeatureService {
 
 	/**
-	 * This method will return an {@link Optional} over the {@link Feature} entity
-	 * with name {@code featureName}. Caller can then decide what to do if such a
-	 * {@link Feature} was not found. <br>
+	 * This method will return a {@link Feature} entity with name
+	 * {@code featureName}. If any such entity exists.
 	 * 
-	 * @param featureName The name of the feature to search for.<br>
-	 *                    <br>
-	 * @return An {@link Optional} over the {@link Feature} entity with name
-	 *         {@code featureName}.
+	 * @param featureName The name of the feature to search for.
+	 * @return A {@link Feature} entity with name {@code featureName} if found.
+	 * @throws FeatureNotFoundException If a {@link Feature} with name
+	 *                                  {@code featureName} cannot be found.
 	 */
-	public Feature getFeatureByName(String featureName) throws FeatureNotFoundException;
+	public Feature getFeatureByName(String featureName)
+			throws FeatureNotFoundException;
 }

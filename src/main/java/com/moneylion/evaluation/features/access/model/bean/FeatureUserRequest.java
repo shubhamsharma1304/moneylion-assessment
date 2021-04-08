@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * This class represents the JSON request for {@link FeatureUser}
- * modification/creation. Structurally it mirrors the actual persistent (in
- * database) {@link FeatureUser} entity.
+ * modification/creation. Structurally it mirrors the actual persistent
+ * {@link FeatureUser} entity (in database).
  * 
  * @author Shubham Sharma
  *
@@ -48,31 +48,42 @@ public class FeatureUserRequest {
 	@ApiModelProperty(notes = "The boolean flag that indicates if a certain user's access to a certain feature is enabled/disabled")
 	boolean enable;
 
-	public static FeatureUserRequest of(String featureName, String email, boolean enable) {
+	/**
+	 * Creates a new {@link FeatureUserRequest} using {@code featureName},
+	 * {@code email}, and {@code enable}.
+	 * 
+	 * @param featureName Name of the {@link Feature} for which to create this
+	 *                    {@link FeatureUserRequest}
+	 * @param email       email of the user for which to create this
+	 *                    {@link FeatureUserRequest}
+	 * @param enable      Flag to signify if {@code email}'s access to
+	 *                    {@code featureName} should be enabled or disabled.
+	 * @return
+	 */
+	public static FeatureUserRequest of(String featureName, String email,
+			boolean enable) {
 		return new FeatureUserRequest(featureName, email, enable);
 	}
 
 	/**
-	 * Creates a {@link FeatureUser} entity representation of a
+	 * Get a {@link FeatureUser} entity representation of {@code this}
 	 * {@link FeatureUserRequest}.
 	 * 
 	 * @param featureUserRequest A {@link FeatureUserRequest} created from JSON
 	 *                           request for {@link FeatureUser}
 	 *                           modification/creation from user.
-	 * @return {@link FeatureUser} entity representation of the
-	 *         {@code featureUserRequest}.
-	 * @throws InvalidInputException if either the feature name in the
-	 *                               {@code featureUserRequest} is blank or if the
-	 *                               email in the {@code featureUserRequest} is not
-	 *                               a valid email address.
+	 * @return {@link FeatureUser} entity representation of {@code this}
+	 *         {@link FeatureUserRequest}
 	 */
 	@JsonIgnore
 	public FeatureUser getFeatureUser() {
 
 		String validEmail = standardizeEmailInput(this.getEmail());
-		String validFeatureName = standardizeFeatureNameInput(this.getFeatureName());
+		String validFeatureName = standardizeFeatureNameInput(
+				this.getFeatureName());
 
-		FeatureUser featureUser = new FeatureUser(new FeatureUserId(validFeatureName, validEmail),
+		FeatureUser featureUser = new FeatureUser(
+				new FeatureUserId(validFeatureName, validEmail),
 				new Feature(validFeatureName), this.isEnable());
 
 		return featureUser;

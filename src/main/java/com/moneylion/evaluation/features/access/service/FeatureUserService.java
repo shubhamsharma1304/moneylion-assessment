@@ -1,43 +1,56 @@
 package com.moneylion.evaluation.features.access.service;
 
-import java.util.Optional;
-
 import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.exception.FeatureUserNotFoundException;
+import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
+import com.moneylion.evaluation.features.access.model.bean.FeatureUserRequest;
 
 public interface FeatureUserService {
 
 	/**
-	 * This method will return an {@link Optional} over a persistent
-	 * {@link FeatureUser} entity that matches with {@code featureUser}. If such a
-	 * persistent {@link FeatureUser} entity cannot be found, it will return an
-	 * {@link Optional} over {@code null}. <br>
+	 * This method will first check if the {@link Feature} which the
+	 * {@link FeatureUserRequest featureUserRequest} represents, exists or not.
+	 * If it does, then this method will return a {@link FeatureUser} entity
+	 * that matches the {@link FeatureUserRequest featureUserRequest}, if such
+	 * an entity exists.
 	 * 
-	 * @param featureUser<br>
-	 *                        <br>
-	 * @return An {@link Optional} over a persistent {@link FeatureUser} entity that
-	 *         matches with {@code featureUser}. If such a persistent
-	 *         {@link FeatureUser} entity cannot be found, then an {@link Optional}
-	 *         over {@code null}.<br>
-	 *         <br>
+	 * @param featureUserRequest The {@link FeatureUserRequest} for which
+	 *                           corresponding {@link FeatureUser} has to be
+	 *                           retrieved.
+	 * @return A {@link FeatureUser} entity that matches
+	 *         {@link FeatureUserRequest featureUserRequest} if such an entity
+	 *         exists.
+	 * @throws FeatureNotFoundException     If the {@link Feature} entity which
+	 *                                      the {@link FeatureUserRequest
+	 *                                      featureUserRequest} represents,
+	 *                                      doesn't exist.
+	 * @throws FeatureUserNotFoundException If a persistent {@link FeatureUser}
+	 *                                      entity matching
+	 *                                      {@link FeatureUserRequest
+	 *                                      featureUserRequest} doesn't exist.
+	 * 
 	 */
-	public FeatureUser getFeatureUser(FeatureUser featureUser)
+	public FeatureUser getFeatureUser(FeatureUserRequest featureUserRequest)
 			throws FeatureNotFoundException, FeatureUserNotFoundException;
 
 	/**
 	 * This method either creates a new persistent {@link FeatureUser} entity or
 	 * updates the existing one if found.
 	 * 
-	 * @param featureUser The {@link FeatureUser} that needs to be persisted
-	 *                    (created or updated).
-	 * @return The {@link FeatureUser} {@code featureUser} after it has been
+	 * @param featureUserRequest {@link FeatureUserRequest} representation of
+	 *                           {@link FeatureUser} entity that has to be added
+	 *                           or modified.
+	 * @return The {@link FeatureUser} The {@link FeatureUser} entity that was
+	 *         added or modified as a resulr of this method execution.
 	 *         persisted.
-	 * @throws FeatureAccessModificationException If a problem was encountered while
-	 *                                            trying to create or update the
-	 *                                            {@link FeatureUser}
-	 *                                            {@code featureUser}.
+	 * @throws FeatureAccessModificationException If a problem was encountered
+	 *                                            while trying to create or
+	 *                                            update {@link FeatureUser}
+	 *                                            represented by
+	 *                                            {@link FeatureUserRequest}.
 	 */
-	public FeatureUser createOrModify(FeatureUser featureUser) throws FeatureAccessModificationException;
+	public FeatureUser createOrModify(FeatureUserRequest featureUserRequest)
+			throws FeatureAccessModificationException;
 }

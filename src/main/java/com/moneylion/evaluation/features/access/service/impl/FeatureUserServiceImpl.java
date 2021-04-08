@@ -7,6 +7,7 @@ import com.moneylion.evaluation.features.access.exception.FeatureAccessModificat
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.exception.FeatureUserNotFoundException;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
+import com.moneylion.evaluation.features.access.model.bean.FeatureUserRequest;
 import com.moneylion.evaluation.features.access.repository.FeatureUserRepository;
 import com.moneylion.evaluation.features.access.service.FeatureService;
 import com.moneylion.evaluation.features.access.service.FeatureUserService;
@@ -24,19 +25,24 @@ public class FeatureUserServiceImpl implements FeatureUserService {
 	private final FeatureService featureService;
 
 	@Override
-	public FeatureUser getFeatureUser(FeatureUser featureUser)
+	public FeatureUser getFeatureUser(FeatureUserRequest featureUserRequest)
 			throws FeatureNotFoundException, FeatureUserNotFoundException {
 
-		featureService.getFeatureByName(featureUser.getId().getFeatureName());
+		featureService.getFeatureByName(featureUserRequest.getFeatureName());
 
-		return featureUserRepository.findById(featureUser.getId())
-				.orElseThrow(() -> FeatureUserNotFoundException.forFeatureUser(featureUser));
+		FeatureUser featureUser = featureUserRequest.getFeatureUser();
+
+		return featureUserRepository.findById(featureUser.getId()).orElseThrow(
+				() -> FeatureUserNotFoundException.forFeatureUser(featureUser));
 	}
 
 	@Override
-	public FeatureUser createOrModify(FeatureUser featureUser) throws FeatureAccessModificationException {
+	public FeatureUser createOrModify(FeatureUserRequest featureUserRequest)
+			throws FeatureAccessModificationException {
+
 		try {
-			return featureUserRepository.save(featureUser);
+			return featureUserRepository
+					.save(featureUserRequest.getFeatureUser());
 		} catch (Throwable e) {
 			throw new FeatureAccessModificationException(e);
 		}
