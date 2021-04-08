@@ -30,7 +30,7 @@ public class SpringFoxSwaggerConfiguration {
 		return new ApiInfo(
 				"Features Access Control API", "API to add/enable/disable feature access of users (by their email).",
 				"1.0", "N/A - Free use", new Contact("Shubham Sharma",
-						"https://github.com/shubhamsharma1304/moneylion-assessment", "shubham.sharma1304@gmail.com"),
+						"https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md", "shubham.sharma1304@gmail.com"),
 				"N/A - Free use", "N/A", Collections.emptySet());
 	}
 }
