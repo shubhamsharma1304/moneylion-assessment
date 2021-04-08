@@ -9,7 +9,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
+import com.moneylion.evaluation.features.access.exception.FeatureUserNotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,9 +38,8 @@ public class FeaturesAccessServiceExceptionHandler {
 		private String path;
 	}
 
-	@ExceptionHandler(FeatureNotFoundException.class)
-	public final ResponseEntity<GenericAPIError> handleFeatureNotFoundException(FeatureNotFoundException excp,
-			WebRequest request) {
+	@ExceptionHandler({ FeatureNotFoundException.class, FeatureUserNotFoundException.class })
+	public final ResponseEntity<GenericAPIError> Exception(Exception excp, WebRequest request) {
 		HttpStatus returnStatus = HttpStatus.NOT_FOUND;
 		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getLocalizedMessage());
 	}
@@ -67,7 +67,7 @@ public class FeaturesAccessServiceExceptionHandler {
 				.map(ConstraintViolation::getMessage).collect(Collectors.toSet()).toString());
 	}
 
-	@ExceptionHandler({ HttpMessageConversionException.class, ServletRequestBindingException.class })
+	@ExceptionHandler({ HttpMessageNotReadableException.class, ServletRequestBindingException.class })
 	public ResponseEntity<GenericAPIError> handleBadOrMalformedRequestExceptions(Exception excp, WebRequest request) {
 		HttpStatus returnStatus = HttpStatus.BAD_REQUEST;
 		return getCommonErrorResponseEntity(returnStatus, request, () -> excp.getLocalizedMessage());

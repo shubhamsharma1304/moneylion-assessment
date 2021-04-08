@@ -1,9 +1,8 @@
 package com.moneylion.evaluation.features.access.service.impl;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
+import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.repository.FeatureRepository;
 import com.moneylion.evaluation.features.access.service.FeatureService;
@@ -18,7 +17,7 @@ public class FeatureServiceImpl implements FeatureService {
 	private final FeatureRepository featureRepository;
 
 	@Override
-	public Optional<Feature> getFeatureByName(String featureName) {
-		return featureRepository.findById(featureName);
+	public Feature getFeatureByName(String featureName) throws FeatureNotFoundException {
+		return featureRepository.findById(featureName).orElseThrow(() -> FeatureNotFoundException.forName(featureName));
 	}
 }

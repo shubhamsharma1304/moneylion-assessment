@@ -1,8 +1,5 @@
 package com.moneylion.evaluation.features.access.model;
 
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.standardizeEmailInput;
-import static com.moneylion.evaluation.features.access.helpers.CommonHelper.standardizeFeatureNameInput;
-
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -13,10 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -90,66 +84,5 @@ public class FeatureUser {
 
 		@Column(name = "user_email", nullable = false, updatable = false)
 		private String userEmail;
-	}
-
-	/**
-	 * This class represents the JSON request for {@link FeatureUser}
-	 * modification/creation. Structurally it mirrors the actual persistent (in
-	 * database) {@link FeatureUser} entity.
-	 * 
-	 * @author Shubham Sharma
-	 *
-	 */
-	@Data
-	@AllArgsConstructor
-	public static class FeatureUserRequest {
-
-		@NotBlank(message = "Field featureName should be a non-blank value.")
-		private String featureName;
-
-		@NotBlank(message = "Field email should be a non-blank value.")
-		@Email(message = "Field email is not a valid email address. Please check.")
-		private String email;
-
-		boolean enable;
-	}
-
-	/**
-	 * Creates a {@link FeatureUser} entity representation of a
-	 * {@link FeatureUserRequest}.
-	 * 
-	 * @param featureUserRequest A {@link FeatureUserRequest} created from JSON
-	 *                           request for {@link FeatureUser}
-	 *                           modification/creation from user.
-	 * @return {@link FeatureUser} entity representation of the
-	 *         {@code featureUserRequest}.
-	 * @throws InvalidInputException if either the feature name in the
-	 *                               {@code featureUserRequest} is blank or if the
-	 *                               email in the {@code featureUserRequest} is not
-	 *                               a valid email address.
-	 */
-	public static FeatureUser fromRequest(FeatureUserRequest featureUserRequest) {
-
-		String validEmail = standardizeEmailInput(featureUserRequest.getEmail());
-		String validFeatureName = standardizeFeatureNameInput(featureUserRequest.getFeatureName());
-
-		FeatureUser featureUser = new FeatureUser(new FeatureUserId(validFeatureName, validEmail),
-				new Feature(validFeatureName), featureUserRequest.isEnable());
-
-		return featureUser;
-	}
-
-	@Data
-	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class FeatureUserResponse {
-		private final boolean canAccess;
-
-		private static FeatureUserResponse fromFeatureUser(FeatureUser featureUser) {
-			return new FeatureUserResponse(featureUser.getIsEnabled());
-		}
-	}
-
-	public FeatureUserResponse getResponse() {
-		return FeatureUserResponse.fromFeatureUser(this);
 	}
 }

@@ -3,7 +3,6 @@ package com.moneylion.evaluation.features.access.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,10 @@ import com.moneylion.evaluation.features.access.service.impl.FeatureServiceImpl;
 @ExtendWith(SpringExtension.class)
 class FeatureServiceTest {
 
+	private static final String DEFAULT_TEST_FEATURE_NAME = "UnitTestFeature";
+
 	@Mock
 	private FeatureRepository featureRepository;
-
 
 	@InjectMocks
 	private FeatureServiceImpl featureService;
@@ -35,22 +35,18 @@ class FeatureServiceTest {
 	@Test
 	void shouldFindFeature() throws FeatureNotFoundException {
 
-		String featureName = "UnitTestFeature";
+		Feature feature = getMockFeature(DEFAULT_TEST_FEATURE_NAME);
 
-		Feature feature = getMockFeature(featureName);
+		Mockito.when(featureRepository.findById(DEFAULT_TEST_FEATURE_NAME)).thenReturn(Optional.of(feature));
 
-		Mockito.when(featureRepository.findById(featureName)).thenReturn(Optional.of(feature));
-
-		assertEquals(feature, featureService.getFeatureByName(featureName).get());
+		assertEquals(feature, featureService.getFeatureByName(DEFAULT_TEST_FEATURE_NAME));
 	}
 
 	@Test
 	void shouldNotFindFeature() {
 
-		String featureName = "UnitTestFeature";
+		Mockito.when(featureRepository.findById(DEFAULT_TEST_FEATURE_NAME)).thenReturn(Optional.ofNullable(null));
 
-		Mockito.when(featureRepository.findById(featureName)).thenReturn(Optional.ofNullable(null));
-
-		assertThrows(NoSuchElementException.class, () -> featureService.getFeatureByName(featureName).get());
+		assertThrows(FeatureNotFoundException.class, () -> featureService.getFeatureByName(DEFAULT_TEST_FEATURE_NAME));
 	}
 }

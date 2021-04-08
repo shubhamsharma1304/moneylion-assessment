@@ -1,7 +1,5 @@
 package com.moneylion.evaluation.features.access.exception;
 
-import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserRequest;
-
 public class FeatureAccessModificationException extends Exception {
 	/**
 	 * 
@@ -12,10 +10,8 @@ public class FeatureAccessModificationException extends Exception {
 		super(message, cause);
 	}
 
-	public static FeatureAccessModificationException forFeatureUserRequest(FeatureUserRequest featureUserRequest,
-			Throwable cause) {
+	public FeatureAccessModificationException(Throwable cause) {
 
-		return new FeatureAccessModificationException(
-				"Could not modify/create feature access for " + featureUserRequest, cause);
+		this("Could not modify/create feature access for this request.", cause);
 	}
 }

@@ -3,7 +3,6 @@ package com.moneylion.evaluation.features.access.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,7 +15,9 @@ import org.mockito.Mockito;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
 import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
+import com.moneylion.evaluation.features.access.exception.FeatureUserNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserId;
@@ -26,8 +27,16 @@ import com.moneylion.evaluation.features.access.service.impl.FeatureUserServiceI
 @ExtendWith(SpringExtension.class)
 class FeatureUserServiceTest {
 
+	private static final String DEFAULT_TEST_FEATURE_NAME = "UnitTestFeature";
+	private static final String DEFAULT_TEST_EMAIL = "unittest1@test.com";
+	boolean CAN_ACCESS_YES = true;
+	boolean CANNOT_ACCESS_NO = !CAN_ACCESS_YES;
+
 	@Mock
 	private FeatureUserRepository featureUserRepository;
+
+	@Mock
+	private FeatureService featureService;
 
 	@InjectMocks
 	private FeatureUserServiceImpl featureUserService;
@@ -46,34 +55,26 @@ class FeatureUserServiceTest {
 	}
 
 	@Test
-	void shouldFindFeatureUserCanAccess() throws FeatureNotFoundException {
+	void shouldFindFeatureUserCanAccess() throws FeatureUserNotFoundException, FeatureNotFoundException {
 
-		String featureName = "UnitTestFeature";
-		String email = "unittest1@test.com";
-		boolean canAccess = true;
-
-		FeatureUser featureUser = getMockFeatureUser(featureName, email, canAccess);
+		FeatureUser featureUser = getMockFeatureUser(DEFAULT_TEST_FEATURE_NAME, DEFAULT_TEST_EMAIL, CAN_ACCESS_YES);
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.of(featureUser));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
+		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser);
 
 		assertEquals(featureUser, testFeatureUser);
 		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());
 	}
 
 	@Test
-	void shouldFindFeatureUserCannotAccess() throws FeatureNotFoundException {
+	void shouldFindFeatureUserCannotAccess() throws FeatureNotFoundException, FeatureUserNotFoundException {
 
-		String featureName = "UnitTestFeature";
-		String email = "unittest1@test.com";
-		boolean canAccess = false;
-
-		FeatureUser featureUser = getMockFeatureUser(featureName, email, canAccess);
+		FeatureUser featureUser = getMockFeatureUser(DEFAULT_TEST_FEATURE_NAME, DEFAULT_TEST_EMAIL, CANNOT_ACCESS_NO);
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.of(featureUser));
 
-		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser).get();
+		FeatureUser testFeatureUser = featureUserService.getFeatureUser(featureUser);
 
 		assertEquals(featureUser, testFeatureUser);
 		assertEquals(featureUser.getIsEnabled(), testFeatureUser.getIsEnabled());
@@ -82,24 +83,23 @@ class FeatureUserServiceTest {
 	@Test
 	void shouldNotFindFeatureUser() throws FeatureNotFoundException {
 
-		String featureName = "UnitTestFeature";
-		String email = "unittest1@test.com";
 		boolean canAccess = false;
 
-		FeatureUser featureUser = getMockFeatureUser(featureName, email, canAccess);
+		FeatureUser featureUser = getMockFeatureUser(DEFAULT_TEST_FEATURE_NAME, DEFAULT_TEST_EMAIL, canAccess);
+
+		Mockito.when(featureService.getFeatureByName(featureUser.getId().getFeatureName()))
+				.thenReturn(featureUser.getFeature());
 
 		Mockito.when(featureUserRepository.findById(featureUser.getId())).thenReturn(Optional.ofNullable(null));
 
-		assertThrows(NoSuchElementException.class, () -> featureUserService.getFeatureUser(featureUser).get());
+		assertThrows(FeatureUserNotFoundException.class, () -> featureUserService.getFeatureUser(featureUser));
 	}
 
 	@Test
 	void shouldCreateFeatureUser() throws Throwable {
-		String featureName = "UnitTestFeature";
-		String email = "unittest1@test.com";
 		boolean canAccess = false;
 
-		FeatureUser featureUser = getMockFeatureUser(featureName, email, canAccess);
+		FeatureUser featureUser = getMockFeatureUser(DEFAULT_TEST_FEATURE_NAME, DEFAULT_TEST_EMAIL, canAccess);
 
 		Mockito.when(featureUserRepository.save(featureUser)).thenReturn(featureUser);
 
@@ -108,15 +108,13 @@ class FeatureUserServiceTest {
 
 	@Test
 	void shouldNotCreateFeatureUser() {
-		String featureName = "UnitTestFeature";
-		String email = "unittest1@test.com";
 		boolean canAccess = false;
 
-		FeatureUser featureUser = getMockFeatureUser(featureName, email, canAccess);
+		FeatureUser featureUser = getMockFeatureUser(DEFAULT_TEST_FEATURE_NAME, DEFAULT_TEST_EMAIL, canAccess);
 
 		Mockito.when(featureUserRepository.save(featureUser))
 				.thenThrow(new JpaObjectRetrievalFailureException(new EntityNotFoundException()));
 
-		assertThrows(JpaObjectRetrievalFailureException.class, () -> featureUserService.createOrModify(featureUser));
+		assertThrows(FeatureAccessModificationException.class, () -> featureUserService.createOrModify(featureUser));
 	}
 }

@@ -2,6 +2,7 @@ package com.moneylion.evaluation.features.access.service;
 
 import java.util.Optional;
 
+import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
 import com.moneylion.evaluation.features.access.model.Feature;
 
 public interface FeatureService {
@@ -16,5 +17,5 @@ public interface FeatureService {
 	 * @return An {@link Optional} over the {@link Feature} entity with name
 	 *         {@code featureName}.
 	 */
-	public Optional<Feature> getFeatureByName(String featureName);
+	public Feature getFeatureByName(String featureName) throws FeatureNotFoundException;
 }

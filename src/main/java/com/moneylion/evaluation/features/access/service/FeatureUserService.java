@@ -2,6 +2,9 @@ package com.moneylion.evaluation.features.access.service;
 
 import java.util.Optional;
 
+import com.moneylion.evaluation.features.access.exception.FeatureAccessModificationException;
+import com.moneylion.evaluation.features.access.exception.FeatureNotFoundException;
+import com.moneylion.evaluation.features.access.exception.FeatureUserNotFoundException;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 
 public interface FeatureUserService {
@@ -20,7 +23,8 @@ public interface FeatureUserService {
 	 *         over {@code null}.<br>
 	 *         <br>
 	 */
-	public Optional<FeatureUser> getFeatureUser(FeatureUser featureUser);
+	public FeatureUser getFeatureUser(FeatureUser featureUser)
+			throws FeatureNotFoundException, FeatureUserNotFoundException;
 
 	/**
 	 * This method either creates a new persistent {@link FeatureUser} entity or
@@ -30,8 +34,10 @@ public interface FeatureUserService {
 	 *                    (created or updated).
 	 * @return The {@link FeatureUser} {@code featureUser} after it has been
 	 *         persisted.
-	 * @throws Throwable If a problem was encountered while trying to create or
-	 *                   update the {@link FeatureUser} {@code featureUser}.
+	 * @throws FeatureAccessModificationException If a problem was encountered while
+	 *                                            trying to create or update the
+	 *                                            {@link FeatureUser}
+	 *                                            {@code featureUser}.
 	 */
-	public FeatureUser createOrModify(FeatureUser featureUser) throws Throwable;
+	public FeatureUser createOrModify(FeatureUser featureUser) throws FeatureAccessModificationException;
 }
