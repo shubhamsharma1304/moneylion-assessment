@@ -7,12 +7,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class represents the JSON request for {@link FeatureUser}
@@ -23,7 +26,9 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
+@JsonPropertyOrder({ "featureName", "email", "enable" })
 public class FeatureUserRequest {
 
 	@Valid
@@ -55,6 +60,7 @@ public class FeatureUserRequest {
 	 *                               email in the {@code featureUserRequest} is not
 	 *                               a valid email address.
 	 */
+	@JsonIgnore
 	public FeatureUser getFeatureUser() {
 
 		String validEmail = standardizeEmailInput(this.getEmail());

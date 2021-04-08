@@ -5,6 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,7 +64,7 @@ public class FeatureController {
 	 *         API consumer.
 	 * @throws FeatureUserNotFoundException
 	 */
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<FeatureUserResponse> getFeatureAccessByEmail(
 			@Email @NotBlank(message = "Request parameter email is not a valid email address. Please check.") @RequestParam String email,
@@ -98,8 +99,8 @@ public class FeatureController {
 	 *                           <br>
 	 * @return
 	 */
-	@PostMapping
-	public ResponseEntity<?> addFeatureAccessByEmail(@Valid @RequestBody FeatureUserRequest featureUserRequest)
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> addOrModifyFeatureAccessByEmail(@Valid @RequestBody FeatureUserRequest featureUserRequest)
 			throws FeatureAccessModificationException {
 		featureUserService.createOrModify(featureUserRequest.getFeatureUser());
 		return ResponseEntity.ok().build();
