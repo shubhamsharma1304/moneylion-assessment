@@ -13,6 +13,8 @@ import com.moneylion.evaluation.features.access.model.Feature;
 import com.moneylion.evaluation.features.access.model.FeatureUser;
 import com.moneylion.evaluation.features.access.model.FeatureUser.FeatureUserId;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,21 +27,25 @@ import lombok.NoArgsConstructor;
  * @author Shubham Sharma
  *
  */
+@ApiModel(description = "Request to add, enable, or disable a certain user's access to a certain feature.")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonPropertyOrder({ "featureName", "email", "enable" })
 public class FeatureUserRequest {
 
+	@ApiModelProperty(notes = "The name of the feature for which you want to check access of a certain user.")
 	@Valid
 	@NotBlank(message = "Field featureName should be a non-blank value.")
 	private String featureName;
 
+	@ApiModelProperty(notes = "The email address of the user whose access you want to check against a certain feature.")
 	@Valid
 	@NotBlank(message = "Field email should be a non-blank value.")
 	@Email(message = "Field email is not a valid email address. Please check.")
 	private String email;
 
+	@ApiModelProperty(notes = "The boolean flag that indicates if a certain user's access to a certain feature is enabled/disabled")
 	boolean enable;
 
 	public static FeatureUserRequest of(String featureName, String email, boolean enable) {

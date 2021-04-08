@@ -23,14 +23,18 @@ public class SpringFoxSwaggerConfiguration {
 	@Bean
 	public Docket getSwaggerConfigurationDocket() {
 		return new Docket(DocumentationType.SWAGGER_2).select().paths(PathSelectors.ant("/feature"))
-				.apis(RequestHandlerSelectors.basePackage("com.moneylion")).build().apiInfo(getAPIInfo());
+				.apis(RequestHandlerSelectors.basePackage("com.moneylion")).build().apiInfo(getAPIInfo())
+				.useDefaultResponseMessages(false);
 	}
 
 	private ApiInfo getAPIInfo() {
-		return new ApiInfo(
-				"Features Access Control API", "API to add/enable/disable feature access of users (by their email).",
-				"1.0", "https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md", new Contact("Shubham Sharma",
-						"https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md", "shubham.sharma1304@gmail.com"),
-				"N/A - Free use", "https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md", Collections.emptySet());
+		return new ApiInfo("Features Access Control API",
+				"API to add/enable/disable feature access of users (by their email).", "1.0",
+				"https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md",
+				new Contact("Shubham Sharma",
+						"https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md",
+						"shubham.sharma1304@gmail.com"),
+				"N/A - Free use", "https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/README.md",
+				Collections.emptySet());
 	}
 }

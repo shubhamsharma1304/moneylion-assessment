@@ -24,6 +24,11 @@ import com.moneylion.evaluation.features.access.model.bean.FeatureUserRequest;
 import com.moneylion.evaluation.features.access.model.bean.FeatureUserResponse;
 import com.moneylion.evaluation.features.access.service.FeatureUserService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * @author Shubham Sharma
  *
@@ -66,10 +71,17 @@ public class FeatureController {
 	 */
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(value = "Finds out if a certain user can access a certain feature.", notes = "Finds out if a certain user (identified by email) has access to a certain feature (identified by the name of the feature - featureName).")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Success", response = FeatureUserResponse.class),
+			@ApiResponse(code = 400, message = "Bad Request"), 
+			@ApiResponse(code = 404, message = "Not Found"),
+			@ApiResponse(code = 500, message = "Server Failure"), })
 	public ResponseEntity<FeatureUserResponse> getFeatureAccessByEmail(
-			@Email @NotBlank(message = "Request parameter email is not a valid email address. Please check.") @RequestParam String email,
-			@NotBlank(message = "Request parameter featureName name should be a non-blank value.") @RequestParam String featureName)
-			throws FeatureNotFoundException, FeatureUserNotFoundException {
+			@ApiParam(value = "The name of the feature for which you want to check access of a certain user.") @Email(message = "Request parameter email is not a valid email address. Please check.") @NotBlank(message = "Request parameter email should be a non-blank value.") @RequestParam
+			String email,
+			@ApiParam(value = "The email address of the user whose access you want to check against a certain feature.") @NotBlank(message = "Request parameter featureName name should be a non-blank value.") @RequestParam
+			String featureName) throws FeatureNotFoundException, FeatureUserNotFoundException {
 
 		FeatureUser featureUser = FeatureUserRequest.of(featureName, email, false).getFeatureUser();
 
@@ -99,9 +111,15 @@ public class FeatureController {
 	 *                           <br>
 	 * @return
 	 */
+	@ApiOperation(value = "Adds/Enables/Disables a certain user's access to a certain feature.", notes = "Adds/Enables/Disables a certain user's (identified by email in the JSON request body) access to a certain feature (identified by the name of the feature - featureName in the JSON request body).")
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Success", response = Void.class),
+			@ApiResponse(code = 400, message = "Bad Request"), 
+			@ApiResponse(code = 304, message = "Not Modified"), 
+			@ApiResponse(code = 500, message = "Server Failure"), })
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addOrModifyFeatureAccessByEmail(@Valid @RequestBody FeatureUserRequest featureUserRequest)
-			throws FeatureAccessModificationException {
+	public ResponseEntity<Void> addOrModifyFeatureAccessByEmail(@Valid @RequestBody
+	FeatureUserRequest featureUserRequest) throws FeatureAccessModificationException {
 		featureUserService.createOrModify(featureUserRequest.getFeatureUser());
 		return ResponseEntity.ok().build();
 	}
