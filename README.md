@@ -6,6 +6,7 @@
 * **I've used [Project Lombok](https://www.baeldung.com/intro-to-project-lombok) to reduce the amount of manually written boilerplate code. If it's not acceptable to use Lombok and the assessors would like me to write the boilerplate myself, please let me know, I'd be happy to do so.**
 * I have deployed the same application to Heroku (https://features-access-control.herokuapp.com/feature) as well if someone just wants to do functional testing without having to build.
 * For demo purpose, at every start/restart the appliction will drop the required tables and create them newly and inject with the data as present in [/src/main/resources/data.sql](https://github.com/shubhamsharma1304/moneylion-assessment/blob/master/src/main/resources/data.sql)
+* I wanted to also write some integration tests but couldn't do that due to lack of time. But I've written some basic unit test cases. Find them in [/src/test/java/com/moneylion/evaluation/features/access/service](https://github.com/shubhamsharma1304/moneylion-assessment/tree/master/src/test/java/com/moneylion/evaluation/features/access/service).
 
 ### Design decisions and their justifications:
 1. #### The relationship between Feature and User(email) entities:<br>
